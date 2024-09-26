@@ -17,6 +17,7 @@ class Fits
     private $byteStream;
     private string $path;
     public readonly int $size;
+    public readonly string $headerBlock;
 
     /**
     * @throws InvalidFitsException, InvalidPathException
@@ -34,6 +35,8 @@ class Fits
         if (! $this->validate()) {
             throw new InvalidFitsException('The opened file is not a valid FITS image (invalid block size)');
         }
+
+        $this->headerBlock = $this->extractHeader();
     }
     /**
     * Validate the given FITS file based on block sizes
@@ -52,11 +55,16 @@ class Fits
         return true;
     }
     /**
-    * @todo Return FitsHeader object
-    * @return string
+    * @return FitsHeader
     */
-    #[\ReturnTypeWillChange]
-    public function header(): string
+    public function header(): FitsHeader
+    {
+        return new FitsHeader($this->headerBlock);
+    }
+    /**
+    * Extract the FITS header block as a string
+    */
+    private function extractHeader(): string
     {
         $contents = fread($this->byteStream, $this->size);
         $end = strpos($contents, 'END');
@@ -66,8 +74,8 @@ class Fits
         return substr($contents, 0, $headerEnd);
     }
 
-    public function fromPath(string $path): void
+    public function writeTo(string $path): void
     {
-        $this->byteStream = fopen($path, 'rb');
+        // TODO
     }
 }
