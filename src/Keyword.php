@@ -15,4 +15,9 @@ readonly class Keyword
         public string $value,
         public ?string $comment,
     ) {}
+
+    public function toString(): string
+    {
+        return "{$this->name}={$this->value}/{$this->comment}";
+    }
 }

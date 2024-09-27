@@ -13,6 +13,10 @@ class FitsHeader
     * @var Keyword[] $keywords
     */
     public readonly array $keywords;
+    /**
+    * @var string[] $blanks
+    */
+    private array $blanks;
 
     public function __construct(string $headerBlock)
     {
@@ -30,26 +34,42 @@ class FitsHeader
     {
         $records = str_split($this->headerBlock, 80);
 
-        $records = array_filter(
+        $filtered = array_filter(
             $records,
             fn (string $r) => trim($r) !== '' && !str_starts_with($r, 'END')
         );
 
+        $this->blanks = array_diff($records, $filtered);
+
         $keywords = [];
 
-        foreach ($records as $record) {
+        foreach ($filtered as $record) {
             $splitByComment = explode('/', $record);
-            $comment = isset($splitByComment[1]) ? trim($splitByComment[1]) : null;
-            $nameValue = explode('=', $splitByComment[0]);
+            $comment = isset($splitByComment[1]) ? $splitByComment[1] : null;
+            [$name, $value] = explode('=', $splitByComment[0]);
 
             $keywords[] = new Keyword(
-                name : trim($nameValue[0]),
-                value : trim($nameValue[1]),
+                name : $name,
+                value : $value,
                 comment : $comment,
             );
         }
 
         return $keywords;
+    }
+    /**
+    * Return the FITS header as a string (byte stream)
+    */
+    public function toString(): string
+    {
+        $blanks = implode('', $this->blanks);
+        $keywordsString = '';
+
+        foreach ($this->keywords as $keyword) {
+            $keywordsString .= $keyword->toString();
+        }
+
+        return $keywordsString . $blanks;
     }
 }
 
