@@ -7,6 +7,6 @@ namespace Dumbastro\FitsPhp\Exceptions;
 /**
 * @todo Different exception if path is not writable?
 */
-final class InvalidPathException extends \Exception
+final class InvalidPath extends \Exception
 {
 }

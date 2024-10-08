@@ -71,5 +71,36 @@ class FitsHeader
 
         return $keywordsString . $blanks;
     }
+    /**
+    * Retrieve a Keyword object base on key name
+    */
+    public function keyword(string $key): ?Keyword
+    {
+        $keyword = null;
+
+        foreach ($this->keywords as $k) {
+            if (trim($k->name) === $key) {
+                $keyword = $k;
+                break;
+            }
+        }
+
+        return $keyword;
+    }
+    /**
+    * Note: the keyword key string is case-sensitive
+    */
+    public function getKeywordValue(string $key): string
+    {
+        $value = '';
+        foreach ($this->keywords as $keyword) {
+            if (trim($keyword->name) === $key) {
+                $value = $keyword->value;
+                break;
+            }
+        }
+
+        return $value;
+    }
 }
 
