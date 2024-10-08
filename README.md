@@ -23,11 +23,10 @@ Retrieve the image blob for a given FITS file then do something with the bytes:
 declare(strict_types=1);
 
 use Dumbastro\FitsPhp\Fits;
-use Dumbastro\FitsPhp\FitsHeader;
 use Dumbastro\FitsPhp\ImageBlob;
 
 $fits = new Fits('bubble_nebula.fit');
-$blob = new ImageBlob($header, $fits->imageBlob);
+$blob = new ImageBlob($fits->header(), $fits->imageBlob);
 
 foreach ($blob->dataBytes() as $byte) {
     // Do something useful...
