@@ -58,6 +58,7 @@ declare(strict_types=1);
 
 use Dumbastro\FitsPhp\Fits;
 use Dumbastro\FitsPhp\FitsHeader;
+use Dumbastro\FitsPhp\ImageBlob;
 
 $fits = new Fits('bubble_nebula.fit'); // Bit-depth is 32-bit unsigned (for example)
 $fitsHeader = new FitsHeader($fits->headerBlock);
@@ -73,6 +74,6 @@ echo $blob->bitpix->type(); //int32
 
 - [x] Read keywords from the FITS header
 - [x] Separate the main data table (actual image data) from the header (partly done? Who knows...)
-- []  Actually display the image in the standard output
-- []  Save the image to PNG and JPG
-- []  Manipulate the bits using basic processing algorithms??
+- [ ]  Actually display the image in the standard output
+- [ ]  Save the image to PNG and JPG
+- [ ]  Manipulate the bits using basic processing algorithms??
