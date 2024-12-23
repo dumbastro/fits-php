@@ -45,8 +45,10 @@ class FitsHeader
 
         foreach ($filtered as $record) {
             $splitByComment = explode('/', $record);
-            $comment = isset($splitByComment[1]) ? $splitByComment[1] : null;
-            [$name, $value] = explode('=', $splitByComment[0]);
+            $comment = $splitByComment[1] ?? null;
+            $keyVal = explode('=', $splitByComment[0]);
+            $name = $keyVal[0];
+            $value = $keyVal[1] ?? '';
 
             $keywords[] = new Keyword(
                 name : $name,
@@ -72,7 +74,7 @@ class FitsHeader
         return $keywordsString . $blanks;
     }
     /**
-    * Retrieve a Keyword object base on key name
+    * Retrieve a Keyword object based on key name
     */
     public function keyword(string $key): ?Keyword
     {

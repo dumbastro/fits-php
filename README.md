@@ -7,7 +7,7 @@ It should allow for the image to be displayed in a browser or even a terminal (y
 
 ## Why
 
-Why not? But seriously, this doesn't make any sense, you should never use it in any circumstance whatsoever! The idea for this terrible endeavour came from [a video by Dylan O'Donnell](https://youtube.com).
+Why not? But seriously, this doesn't make any sense, you should never use it in any circumstance whatsoever!
 
 ## Usage
 

@@ -12,7 +12,7 @@ readonly class Keyword
 {
     public function __construct(
         public string $name,
-        public string $value,
+        public ?string $value,
         public ?string $comment,
     ) {}
 

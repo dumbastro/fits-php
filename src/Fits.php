@@ -19,6 +19,8 @@ class Fits
     public readonly string $imageBlob;
 
     /**
+    * Construct a Fits object
+    * @param string $path The full path to the FITS file
     * @throws InvalidFits, InvalidPath
     * @todo Check path for reading/writing errors
     */
@@ -36,6 +38,7 @@ class Fits
         }
 
         $this->headerBlock = $this->extractHeader();
+
         $this->fitsHeader = new FitsHeader($this->headerBlock);
         $this->imageBlob = $this->extractImageBlob();
     }
@@ -67,6 +70,7 @@ class Fits
     */
     private function extractHeader(): string
     {
+        
         $end = strpos($this->contents, 'END');
         // Determine minimum integer number of blocks including 'END' position
         $headerEnd = (($end - ($end % 2880)) / 2880 + 1) * 2880;
