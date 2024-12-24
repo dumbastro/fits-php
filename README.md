@@ -72,8 +72,10 @@ echo $blob->bitpix->type(); //int32
 
 ## TODO
 
-- [x] Read keywords from the FITS header
 - [x] Separate the main data table (actual image data) from the header (partly done? Who knows...)
-- [ ]  Actually display the image in the standard output
-- [ ]  Save the image to PNG and JPG
-- [ ]  Manipulate the bits using basic processing algorithms??
+- [x] Read keywords from the FITS header (but consider values and comments could be more than 80-bytes long)
+- [ ] History keywords?
+- [ ] FITS extensions? What to do with NAXIS > 2?
+- [ ] Actually display the image in the standard output (with SVG?)
+- [ ] Save the image to PNG and JPG
+- [ ] Manipulate the bits using basic processing algorithms??

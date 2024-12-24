@@ -6,18 +6,28 @@ use PHPUnit\Framework\TestCase;
 
 final class FitsHeaderTest extends TestCase
 {
-    public function testKeywordValue(): void
+    private Dumbastro\FitsPhp\Fits $fits;
+    private Dumbastro\FitsPhp\FitsHeader $header;
+    
+    protected function setUp(): void
     {
-        $fits = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_orion.fit');
-        $header = new Dumbastro\FitsPhp\FitsHeader($fits->headerBlock);
+        $this->fits = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_orion.fit');
+        $this->header = new Dumbastro\FitsPhp\FitsHeader($this->fits->headerBlock);
+    }
 
+    public function testKeywordValues(): void
+    {
         $this->assertSame(
-            trim($header->getKeywordValue('BITPIX')),
+            trim($this->header->getKeywordValue('BITPIX')),
             '16'
         );
         $this->assertSame(
-            trim($header->getKeywordValue('NAXIS')),
+            trim($this->header->getKeywordValue('NAXIS')),
             '3'
+        );
+        $this->assertSame(
+            trim($this->header->getKeywordValue('STACKCNT')),
+            '86'
         );
     }
 }

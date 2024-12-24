@@ -28,6 +28,8 @@ class FitsHeader
     * 
     * From the spec: each keyword record, including
     * any comments, is at most 80 bytes long
+    * @todo Comments and keyword values could span more
+            than one 80-bytes block...
     * @return Keyword[]
     */
     private function readKeywords(): array
@@ -49,6 +51,11 @@ class FitsHeader
             $keyVal = explode('=', $splitByComment[0]);
             $name = $keyVal[0];
             $value = $keyVal[1] ?? '';
+
+            if (str_starts_with($name, 'COMMENT')) {
+                $value = explode('COMMENT', $name)[1];
+                $name = 'COMMENT';
+            }
 
             $keywords[] = new Keyword(
                 name : $name,
