@@ -13,7 +13,8 @@
         "phpunit/phpunit": "^11.3"
     },
     "scripts": {
-        "run-pstan": "vendor/bin/phpstan analyze src/ --level 6"
+        "run-pstan": "vendor/bin/phpstan analyze src/ --level 6",
+        "run-tests": "vendor/bin/phpunit tests/ --display-warnings"
     },
     "license": "MIT",
     "autoload": {

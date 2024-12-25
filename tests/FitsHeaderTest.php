@@ -30,5 +30,30 @@ final class FitsHeaderTest extends TestCase
             '86'
         );
     }
+
+    public function testKeyword(): void
+    {
+        $keyword = $this->header->keyword('NAXIS1');
+
+        // Probably useless... (covered by PHPStan)
+        $this->assertInstanceOf(Dumbastro\FitsPhp\Keyword::class, $keyword);
+
+        $this->assertEquals($keyword->value, 2448);
+
+        $keyword = $this->header->keyword('EQUINOX');
+
+        $this->assertEquals(trim($keyword->value), '2000.');
+    }
+
+    /**
+    * @todo This fails for COMMENT keywords
+    public function testToString(): void
+    {
+        $headerBlock = $this->fits->headerBlock;
+        $headerString = $this->header->toString();
+
+        $this->assertEquals($headerBlock, $headerString);
+    }
+    */
 }
  
