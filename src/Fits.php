@@ -86,8 +86,9 @@ class Fits
     {
         $naxis1 = (int)trim($this->fitsHeader->getKeywordValue('NAXIS1'));
         $naxis2 = (int)trim($this->fitsHeader->getKeywordValue('NAXIS2'));
+        $naxis3 = (int)trim($this->fitsHeader->getKeywordValue('NAXIS3'));
 
-        $blobEnd = $naxis1 * $naxis2;
+        $blobEnd = $naxis1 * $naxis2 * $naxis3;
 
         return substr(
             $this->contents,

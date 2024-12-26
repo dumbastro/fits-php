@@ -26,7 +26,7 @@ final class ImageBlobTest extends TestCase
 
     public function testDataBitsLength(): void
     {
-        $this->assertSame($this->imageBlob->dataBits, 16*2448*1669);
+        $this->assertSame($this->imageBlob->dataBits, 16*2448*1669*3);
     }
 }
  
