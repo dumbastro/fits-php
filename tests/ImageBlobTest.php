@@ -28,6 +28,17 @@ final class ImageBlobTest extends TestCase
     {
         $this->assertSame($this->imageBlob->dataBits, 16*2448*1669*3);
     }
+
+    public function testIsColor(): void
+    {
+        $mono = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_mono.fit');
+        $imageBlob = new Dumbastro\FitsPhp\ImageBlob($mono->header(), $mono->imageBlob);
+
+        $this->assertFalse($imageBlob->isColor);
+        $this->assertTrue($this->imageBlob->isColor);
+
+        $this->assertEquals($imageBlob->naxis3, 1);
+    }
 }
  
 

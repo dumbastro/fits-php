@@ -15,7 +15,8 @@ class ImageBlob
     public readonly int $dataBits;
     public readonly int $width;
     public readonly int $height;
-    public readonly int $naxis3;
+    public readonly ?int $naxis3;
+    public readonly bool $isColor;
 
     /**
     * @throws InvalidBitpixValue
@@ -29,12 +30,27 @@ class ImageBlob
         $this->bitpix = Bitpix::tryFrom($bitpix) ?? throw new InvalidBitpixValue($bitpix);
         $this->width = (int) trim($this->header->keyword('NAXIS1')->value);
         $this->height = (int) trim($this->header->keyword('NAXIS2')->value);
-        $this->naxis3 = (int) trim($this->header->keyword('NAXIS3')->value);
-        $this->dataBits = abs($this->bitpix->value) * $this->width * $this->height * $this->naxis3;
+        $naxis3 = null;
+        $dataBits = abs($this->bitpix->value) * $this->width * $this->height;
+
+        $naxis = (int) trim($this->header->keyword('NAXIS')->value);
+
+        // Color image (right?)
+        if ($naxis === 3) {
+            $naxis3 = (int) trim($this->header->keyword('NAXIS3')->value);
+            $dataBits *= $naxis3;
+        }
+
+        $this->naxis3 = $naxis3 ?? 1;
+        $this->dataBits = $dataBits;
+
+        $this->isColor = $this->naxis3 === 3;
     }
     /**
     * Returns a generator that yields image data
     * pixel by pixel
+    *@todo Conversion from 16 to 8-bit?
+    *      This won't work with mono images...
     */
     public function pixels(): \Generator
     {
