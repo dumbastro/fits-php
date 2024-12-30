@@ -11,13 +11,15 @@ Why not? But seriously, this doesn't make any sense, you should never use it in 
 
 ## Usage
 
+**NOTE: Not added to Packagist yet...**
+
 Add the package with Composer:
 
 ```
 composer require dumbastro/fits-php
 ```
 
-then use classes from the `Dumbastro\FitsPhp` namespace. More info in the documentation.
+then use classes from the `Dumbastro\FitsPhp` namespace.
 
 ### Examples
 
@@ -73,9 +75,9 @@ echo $blob->bitpix->type(); //int32
 ## TODO
 
 - [x] Separate the main data table (actual image data) from the header (partly done? Who knows...)
-- [x] Read keywords from the FITS header (but consider values and comments could be more than 80-bytes long)
+- [x] Read keywords from the FITS header (COMMENT keywords could be buggy)
 - [ ] History keywords?
-- [ ] FITS extensions? What to do with NAXIS > 2?
-- [ ] Actually display the image in the standard output (with SVG?)
-- [ ] Save the image to PNG and JPG
+- [ ] FITS extensions?
+- [ ] Actually display the image in the standard output
+- [ ] Save the image to PNG and/or JPG
 - [ ] Manipulate the bits using basic processing algorithms??
