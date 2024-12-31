@@ -81,9 +81,9 @@ class FitsHeader
         return $keywordsString . $blanks;
     }
     /**
-    * Retrieve a Keyword object based on key name
+    * Retrieve a Keyword record based on key name
     */
-    public function keyword(string $key): ?Keyword
+    public function getKeywordRecord(string $key): ?Keyword
     {
         $keyword = null;
 
@@ -110,6 +110,14 @@ class FitsHeader
         }
 
         return $value;
+    }
+    /**
+    * Check if header contains a multiple of 36 records
+    * (aka 'card images')
+    */
+    public function isValid(): bool
+    {
+        return count($this->keywords) % 36 === 0;
     }
 }
 

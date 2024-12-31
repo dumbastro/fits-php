@@ -31,16 +31,16 @@ final class FitsHeaderTest extends TestCase
         );
     }
 
-    public function testKeyword(): void
+    public function testKeywordRecord(): void
     {
-        $keyword = $this->header->keyword('NAXIS1');
+        $keyword = $this->header->getkeywordRecord('NAXIS1');
 
         // Probably useless... (covered by PHPStan)
         $this->assertInstanceOf(Dumbastro\FitsPhp\Keyword::class, $keyword);
 
         $this->assertEquals($keyword->value, 2448);
 
-        $keyword = $this->header->keyword('EQUINOX');
+        $keyword = $this->header->getKeywordRecord('EQUINOX');
 
         $this->assertEquals(trim($keyword->value), '2000.');
     }

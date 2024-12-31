@@ -26,18 +26,18 @@ class ImageBlob
     {
         $this->header = $header;
         $this->blob = $blob;
-        $bitpix = (int) $this->header->keyword('BITPIX')->value;
+        $bitpix = (int) $this->header->getKeywordValue('BITPIX');
         $this->bitpix = Bitpix::tryFrom($bitpix) ?? throw new InvalidBitpixValue($bitpix);
-        $this->width = (int) trim($this->header->keyword('NAXIS1')->value);
-        $this->height = (int) trim($this->header->keyword('NAXIS2')->value);
+        $this->width = (int) trim($this->header->getKeywordValue('NAXIS1'));
+        $this->height = (int) trim($this->header->getKeywordValue('NAXIS2'));
         $naxis3 = null;
         $dataBits = abs($this->bitpix->value) * $this->width * $this->height;
 
-        $naxis = (int) trim($this->header->keyword('NAXIS')->value);
+        $naxis = (int) trim($this->header->getKeywordValue('NAXIS'));
 
         // Color image (right?)
         if ($naxis === 3) {
-            $naxis3 = (int) trim($this->header->keyword('NAXIS3')->value);
+            $naxis3 = (int) trim($this->header->getKeywordValue('NAXIS3'));
             $dataBits *= $naxis3;
         }
 
@@ -58,6 +58,7 @@ class ImageBlob
         $pixel = [];
         $pixBytes = abs($this->bitpix->value) / 8;
 
+        // Convert char to integer value
         for ($i = 0; $i < strlen($this->blob); $i++) {
             $value = unpack(
                 format: 'C',
