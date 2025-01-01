@@ -71,7 +71,7 @@ class Fits
     private function extractHeader(): string
     {
         
-        $end = strpos($this->contents, 'END');
+        $end = strpos($this->contents, ' END');
         // Determine minimum integer number of blocks including 'END' position
         $headerEnd = (($end - ($end % 2880)) / 2880 + 1) * 2880;
 
