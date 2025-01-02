@@ -7,7 +7,7 @@ It should allow for the image to be displayed in a browser or even a terminal (y
 
 ## Why
 
-Why not? But seriously, this doesn't make any sense, you should never use it in any circumstance whatsoever!
+Why not? But seriously, this doesn't make any sense, you should never use it in any "real-world" situation...
 
 ## Usage
 
@@ -24,7 +24,7 @@ then use classes from the `Dumbastro\FitsPhp` namespace.
 ### Examples
 
 Retrieve the image blob for a given FITS file then do something with the bytes.  
-The method `ImageBlob::dataBytes` returns a `Generator`.
+The method `ImageBlob#pixels` returns a `Generator`.
 
 ```php
 <?php
@@ -37,9 +37,25 @@ use Dumbastro\FitsPhp\ImageBlob;
 $fits = new Fits('bubble_nebula.fit');
 $blob = new ImageBlob($fits->header(), $fits->imageBlob);
 
-foreach ($blob->dataBytes() as $byte) {
+foreach ($blob->pixels() as $pixel) {
     // Do something useful...
 }
+```
+
+or, save the image as a faulty, wrongly displayed PNG:
+
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Dumbastro\FitsPhp\Fits;
+
+$fits = new Fits('bubble_nebula.fit');
+
+$fits->saveAsPNG('/some/path/bubble_nebula.png');
+
 ```
 
 Read a specific keyword value from the FITS header. In this example, `BITPIX` is read which represents the bit depth (bits per pixel) of the image. The bitpix is also a property of the image blob, represented by a PHP `Enum`. Calling the `type()` method on the property returns a string with the following possible values (assuming the bitpix is valid in the first place):
@@ -64,7 +80,7 @@ use Dumbastro\FitsPhp\ImageBlob;
 
 $fits = new Fits('bubble_nebula.fit'); // Bit-depth is 32-bit unsigned (for example)
 $fitsHeader = new FitsHeader($fits->headerBlock);
-$bitpix = (int) $fitsHeader->keyword('BITPIX')->value;
+$bitpix = (int) $fitsHeader->getKeywordRecord('BITPIX')->value;
 
 // Or, with the image blob
 $blob = new ImageBlob($header, $fits->imageBlob);
@@ -72,12 +88,26 @@ echo $blob->bitpix->type(); //int32
 
 ```
 
+## Limitations
+
+Too many to write about them all at this point... Only 8-bit image data are somewhat supported,
+meaning that the `ImageBlob#pixels` method will convert string character bytes from the data stream
+into 8-bit (0-255) decimal values, using `unpack()` (unfortunately...).  
+
+For colour images, it will not do any [demosacing](https://en.wikipedia.org/wiki/Demosaicing) (or _debayering_), of course, so the displayed picture will be grayscale, with the [colour filter array](https://en.wikipedia.org/wiki/Color_filter_array) (CFA) visible as an overlayed pattern of grey squares, as in this example (detail):
+
+<img>
+
+The `Fits#saveAsPNG` method is very slow, I'm not sure to what extent I'll be able to optimize it...
+
 ## TODO
 
-- [x] Separate the main data table (actual image data) from the header (partly done? Who knows...)
+- [x] Separate the main data table - i.e., actual image data - from the header (partly done? Who knows...)
 - [x] Read keywords from the FITS header (COMMENT keywords could be buggy)
-- [ ] History keywords?
-- [ ] FITS extensions?
+- [x] Save the image to PNG and/or JPG (partly done and buggy)
+- [ ] Encode to (PNG? JPEG?) base64 for browser display
 - [ ] Actually display the image in the standard output
-- [ ] Save the image to PNG and/or JPG
+- [ ] History keywords?
+- [ ] Support 16-bits images
 - [ ] Manipulate the bits using basic processing algorithms??
+- [ ] FITS extensions?

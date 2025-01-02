@@ -82,15 +82,73 @@ class ImageBlob
             }
         }
     }
-    /**
-    * Convert to PNG
-    * @todo Manipulate bits and add PNG header to blob??
-    *       Throw exception if gd fails?
-    */
-    public function toPNG(int $quality = -1): bool
+
+    public function dataBytes(): \Generator
     {
-        $gdImg = imagecreatefromstring($this->blob);
-        return imagepng($gdImg, quality: $quality);
+        for ($i = 0; $i < strlen($this->blob); $i++) {
+            yield $this->blob[$i];
+        }
+    }
+    /**
+    * Convert to GD image
+    * @todo Throw exception if gd fails?
+    */
+    public function toGdImage(): \GdImage
+    {
+        $image = $this->createGdImage();
+
+        $x = 1;
+        $y = 1;
+
+        foreach ($this->pixels() as $k => $pixel) {
+            [$r,$g, $b] = $pixel;
+
+            // TODO this shouldn't be necessary...
+            if ($r > 255) $r = 255;
+            if ($g > 255) $g = 255;
+            if ($b > 255) $b = 255;
+
+            $pixel = [$r, $g, $b];
+
+            $this->gdPixel($image, $x, $y, $pixel);
+            // Change row after reaching image width
+            if ($x === $this->width + 1) {
+                $y++;
+                $x = 1;
+            }
+            $x++;
+        }
+
+        return $image;
+    }
+
+    /*
+    private function zeroPad(int $length): string
+    {
+        $zeros = '';
+        $required = (8 - $length);
+
+        for ($i = 0; $i < $required; $i++) {
+            $zeros .= '0';
+        }
+
+        return $zeros;
+    }
+    */
+
+    /**
+    * @param int[] $rgb
+    */
+    private function gdPixel(\GdImage $gdImg, int $x, int $y, array $rgb): bool
+    {
+        $color = imagecolorallocate($gdImg, ...$rgb);
+
+        return imagesetpixel($gdImg, $x, $y, $color);
+    }
+
+    private function createGdImage(): \GdImage|false
+    {
+        return imagecreatetruecolor($this->width, $this->height);
     }
 
     /**

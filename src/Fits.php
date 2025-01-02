@@ -97,6 +97,16 @@ class Fits
         );
     }
 
+    /**
+    * @todo Write exception
+    */
+    public function saveAsPNG(string $path): void
+    {
+        $imageBlob = new ImageBlob($this->header(), $this->imageBlob);
+
+        imagepng($imageBlob->toGdImage(), $path);
+    }
+
     public function writeTo(string $path): void
     {
         // TODO
