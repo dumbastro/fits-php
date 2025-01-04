@@ -39,6 +39,17 @@ final class ImageBlobTest extends TestCase
 
         $this->assertEquals($imageBlob->naxis3, 1);
     }
+
+    public function testGdImage(): void
+    {
+        $test8bit = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_orion_8bit.fit');
+        $imageBlob = new Dumbastro\FitsPhp\ImageBlob(
+            $test8bit->header(),
+            $test8bit->imageBlob
+        );
+
+        $this->assertInstanceOf(\GdImage::class, $imageBlob->toGdImage());
+    }
 }
  
 
