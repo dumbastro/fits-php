@@ -8,6 +8,7 @@ use Dumbastro\FitsPhp\Exceptions\{
     InvalidFits,
     InvalidPath,
 };
+use Jcupitt\Vips;
 
 class Fits
 {
@@ -17,6 +18,7 @@ class Fits
     public readonly int $size;
     public readonly string $headerBlock;
     public readonly string $imageBlob;
+    public readonly Vips\Image $vipsImage;
 
     /**
     * Construct a Fits object
@@ -41,6 +43,7 @@ class Fits
 
         $this->fitsHeader = new FitsHeader($this->headerBlock);
         $this->imageBlob = $this->extractImageBlob();
+        $this->vipsImage = Vips\Image::newFromFile($path, ['access' => 'sequential']);
     }
     /**
     * Validate the given FITS file based on block sizes
@@ -85,21 +88,29 @@ class Fits
             $blobEnd
         );
     }
-
     /**
-    * @todo Write exception
+    * @todo Write exception and check extension; PNG compression?
     */
-    public function saveAsPNG(string $path, int $compressionLevel = 9): void
+    public function saveToPNG(string $path, int $compressionLevel = 9): void
     {
-        $imageBlob = new ImageBlob($this->fitsHeader, $this->imageBlob);
-
-        imagepng(
-            image: $imageBlob->toGdImage(),
-            file: $path,
-            quality: $compressionLevel);
+        $this->vipsImage->writeToFile($path);
+    }
+    /**
+    * @todo Write exception and check extension
+    */
+    public function saveToJPG(string $path): void
+    {
+        $this->vipsImage->writeToFile($path);
+    }
+    /**
+    * @todo Write exception and check extension
+    */
+    public function saveToTIFF(string $path): void
+    {
+        $this->vipsImage->writeToFile($path);
     }
 
-    public function writeTo(string $path): void
+    public function save(?string $path = null): void
     {
         // TODO
     }

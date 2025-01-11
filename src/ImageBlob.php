@@ -6,6 +6,7 @@ namespace Dumbastro\FitsPhp;
 
 use Dumbastro\FitsPhp\Exceptions\InvalidBitpixValue;
 use Dumbastro\FitsPhp\Bitpix;
+use Jcupitt\Vips;
 
 class ImageBlob
 {
@@ -52,7 +53,7 @@ class ImageBlob
     *@todo Conversion from 16 to 8-bit?
     *      This won't work with mono images...
     */
-    public function pixels(): \Generator
+    public function pixels(?Channel $ch = null): \Generator
     {
         $n = 0;
         $pixel = [];
@@ -82,6 +83,21 @@ class ImageBlob
             }
         }
     }
+    /**
+    *@todo Assumes 8-bit
+    */
+    public function pixelsMono(): \Generator
+    {
+        // Convert char to integer value
+        for ($i = 0; $i < strlen($this->blob); $i++) {
+            $value = unpack(
+                format: 'C',
+                string: $this->blob[$i]
+            )[1];
+
+            yield [$value, $value, $value];
+        }
+    }
 
     public function dataBytes(): \Generator
     {
@@ -100,13 +116,17 @@ class ImageBlob
         $x = 1;
         $y = 1;
 
-        foreach ($this->pixels() as $k => $pixel) {
+        $pixels = $this->isColor ? $this->pixels() : $this->pixelsMono();
+
+        foreach ($pixels as $k => $pixel) {
             [$r,$g, $b] = $pixel;
 
             // TODO this shouldn't be necessary...
+            /*
             if ($r > 255) $r = 255;
             if ($g > 255) $g = 255;
             if ($b > 255) $b = 255;
+            */
 
             $pixel = [$r, $g, $b];
 
@@ -121,21 +141,6 @@ class ImageBlob
 
         return $image;
     }
-
-    /*
-    private function zeroPad(int $length): string
-    {
-        $zeros = '';
-        $required = (8 - $length);
-
-        for ($i = 0; $i < $required; $i++) {
-            $zeros .= '0';
-        }
-
-        return $zeros;
-    }
-    */
-
     /**
     * @param int[] $rgb
     */
@@ -150,7 +155,6 @@ class ImageBlob
     {
         return imagecreatetruecolor($this->width, $this->height);
     }
-
     /**
     * Convert to SVG for display
     * @todo This assumes RGB and produces a gigantic file...
