@@ -13,7 +13,7 @@ class Fits
 {
     private string $contents;
     private string $path;
-    private FitsHeader $fitsHeader;
+    public readonly FitsHeader $fitsHeader;
     public readonly int $size;
     public readonly string $headerBlock;
     public readonly string $imageBlob;
@@ -52,18 +52,7 @@ class Fits
     */
     public function validate(): bool
     {
-        if ($this->size % 2880 !== 0) {
-            return false;
-        }
-
-        return true;
-    }
-    /**
-    * @return FitsHeader
-    */
-    public function header(): FitsHeader
-    {
-        return new FitsHeader($this->headerBlock);
+        return (bool) $this->size % 2880 !== 0;
     }
     /**
     * Extract the FITS header block as a string
@@ -88,11 +77,11 @@ class Fits
         $naxis2 = (int)trim($this->fitsHeader->getKeywordValue('NAXIS2'));
         $naxis3 = (int)trim($this->fitsHeader->getKeywordValue('NAXIS3'));
 
-        $blobEnd = $naxis1 * $naxis2 * $naxis3;
+        $blobEnd = $naxis1 * $naxis2; //* $naxis3;
 
         return substr(
             $this->contents,
-            strlen($this->headerBlock) + 1,
+            strlen($this->headerBlock),
             $blobEnd
         );
     }
@@ -100,11 +89,14 @@ class Fits
     /**
     * @todo Write exception
     */
-    public function saveAsPNG(string $path): void
+    public function saveAsPNG(string $path, int $compressionLevel = 9): void
     {
-        $imageBlob = new ImageBlob($this->header(), $this->imageBlob);
+        $imageBlob = new ImageBlob($this->fitsHeader, $this->imageBlob);
 
-        imagepng($imageBlob->toGdImage(), $path);
+        imagepng(
+            image: $imageBlob->toGdImage(),
+            file: $path,
+            quality: $compressionLevel);
     }
 
     public function writeTo(string $path): void

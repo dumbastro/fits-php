@@ -13,7 +13,7 @@ final class ImageBlobTest extends TestCase
     protected function setUp(): void
     {
         $this->fits = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_orion.fit');
-        $this->header = $this->fits->header();
+        $this->header = $this->fits->fitsHeader;
         $blob = $this->fits->imageBlob;
 
         $this->imageBlob = new Dumbastro\FitsPhp\ImageBlob($this->header, $blob);
@@ -32,7 +32,7 @@ final class ImageBlobTest extends TestCase
     public function testIsColor(): void
     {
         $mono = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_mono.fit');
-        $imageBlob = new Dumbastro\FitsPhp\ImageBlob($mono->header(), $mono->imageBlob);
+        $imageBlob = new Dumbastro\FitsPhp\ImageBlob($mono->fitsHeader, $mono->imageBlob);
 
         $this->assertFalse($imageBlob->isColor);
         $this->assertTrue($this->imageBlob->isColor);
@@ -44,7 +44,7 @@ final class ImageBlobTest extends TestCase
     {
         $test8bit = new Dumbastro\FitsPhp\Fits(__DIR__ . '/test_orion_8bit.fit');
         $imageBlob = new Dumbastro\FitsPhp\ImageBlob(
-            $test8bit->header(),
+            $test8bit->fitsHeader,
             $test8bit->imageBlob
         );
 

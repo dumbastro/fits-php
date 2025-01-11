@@ -56,4 +56,3 @@ final class FitsHeaderTest extends TestCase
     }
     */
 }
- 
